@@ -1,48 +1,47 @@
 import mongoose from "mongoose";
+import { MockModel } from "./mockDb.js";
 
+// 1. Unified User Schema
+const userSchema = new mongoose.Schema({
+  userId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
+  role: { type: String, enum: ["SUPER_ADMIN", "ADMIN", "VOTER"], required: true },
+  status: { type: String, enum: ["ACTIVE", "PENDING", "SUSPENDED"], default: "ACTIVE" },
+  biometricType: { type: String, default: "Fingerprint" },
+  hasVoted: { type: Boolean, default: false }
+}, {
+  timestamps: true // Adds createdAt and updatedAt
+});
+
+// 2. Admin Request Schema
 const adminRequestSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   mobile: { type: String, required: true },
   organization: { type: String, required: true },
-  password: { type: String, required: true },
+  identityProof: { type: String, default: "" }, // Base64 or filename
   status: { type: String, enum: ["PENDING", "APPROVED", "REJECTED"], default: "PENDING" },
-  createdAt: { type: String, default: () => new Date().toISOString().slice(0, 10) },
-  rejectionReason: { type: String, default: "" }
+  rejectionReason: { type: String, default: "" },
+  createdAt: { type: Date, default: Date.now }
 });
 
-const adminSchema = new mongoose.Schema({
-  adminId: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ["SUPER_ADMIN", "ADMIN"], required: true },
-  status: { type: String, enum: ["ACTIVE", "SUSPENDED"], default: "ACTIVE" },
-  createdBy: { type: String, required: true },
-  createdAt: { type: String, default: () => new Date().toISOString().slice(0, 10) },
-  failedAttempts: { type: Number, default: 0 },
-  lockedUntil: { type: Date, default: null }
-});
-
+// 3. Voter Application Schema
 const voterApplicationSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   mobile: { type: String, required: true },
+  dob: { type: String, required: true },
+  address: { type: String, required: true },
+  identityProof: { type: String, default: "" }, // Base64 or filename
+  profilePhoto: { type: String, default: "" }, // Base64 or filename
   status: { type: String, enum: ["PENDING", "APPROVED", "REJECTED"], default: "PENDING" },
-  date: { type: String, default: () => new Date().toISOString().slice(0, 10) }
+  rejectionReason: { type: String, default: "" },
+  createdAt: { type: Date, default: Date.now }
 });
 
-const voterSchema = new mongoose.Schema({
-  voterId: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  biometricType: { type: String, default: "Fingerprint" },
-  hasVoted: { type: Boolean, default: false },
-  status: { type: String, enum: ["ACTIVE", "SUSPENDED"], default: "ACTIVE" },
-  isTest: { type: Boolean, default: false }
-});
-
+// 4. Election Schema
 const electionSchema = new mongoose.Schema({
   title: { type: String, default: "" },
   description: { type: String, default: "" },
@@ -51,6 +50,7 @@ const electionSchema = new mongoose.Schema({
   endDate: { type: String, default: "" }
 });
 
+// 5. Candidate Schema
 const candidateSchema = new mongoose.Schema({
   candidateId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
@@ -60,6 +60,7 @@ const candidateSchema = new mongoose.Schema({
   votes: { type: Number, default: 0 }
 });
 
+// 6. Vote Schema
 const voteSchema = new mongoose.Schema({
   voteId: { type: String, required: true },
   electionId: { type: String, default: "1" },
@@ -69,6 +70,7 @@ const voteSchema = new mongoose.Schema({
   blockHash: { type: String, required: true }
 });
 
+// 7. Ledger Block Schema
 const ledgerBlockSchema = new mongoose.Schema({
   blockId: { type: Number, required: true },
   voteId: { type: String, required: true },
@@ -78,13 +80,13 @@ const ledgerBlockSchema = new mongoose.Schema({
   currentHash: { type: String, required: true }
 });
 
+// 8. Security Event Schema
 const securityEventSchema = new mongoose.Schema({
   message: { type: String, required: true },
   time: { type: String, default: () => new Date().toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) }
 });
 
-import { MockModel } from "./mockDb.js";
-
+// Helper for Mock DB fallback Proxy
 function getModel(modelName, mongooseModel) {
   const mockModel = new MockModel(modelName);
   
@@ -113,10 +115,10 @@ function getModel(modelName, mongooseModel) {
   });
 }
 
+// Initialize Mongoose Models
+const mongooseUser = mongoose.model("User", userSchema);
 const mongooseAdminRequest = mongoose.model("AdminRequest", adminRequestSchema);
-const mongooseAdmin = mongoose.model("Admin", adminSchema);
 const mongooseVoterApplication = mongoose.model("VoterApplication", voterApplicationSchema);
-const mongooseVoter = mongoose.model("Voter", voterSchema);
 const mongooseElection = mongoose.model("Election", electionSchema);
 const mongooseCandidate = mongoose.model("Candidate", candidateSchema);
 const mongooseVote = mongoose.model("Vote", voteSchema);
@@ -126,14 +128,13 @@ const mongooseDuplicateAttemptsCounter = mongoose.model("DuplicateAttemptsCounte
   count: { type: Number, default: 0 }
 }));
 
+// Export Proxy Wrapped Models
+export const User = getModel("User", mongooseUser);
 export const AdminRequest = getModel("AdminRequest", mongooseAdminRequest);
-export const Admin = getModel("Admin", mongooseAdmin);
 export const VoterApplication = getModel("VoterApplication", mongooseVoterApplication);
-export const Voter = getModel("Voter", mongooseVoter);
 export const Election = getModel("Election", mongooseElection);
 export const Candidate = getModel("Candidate", mongooseCandidate);
 export const Vote = getModel("Vote", mongooseVote);
 export const LedgerBlock = getModel("LedgerBlock", mongooseLedgerBlock);
 export const SecurityEvent = getModel("SecurityEvent", mongooseSecurityEvent);
 export const DuplicateAttemptsCounter = getModel("DuplicateAttemptsCounter", mongooseDuplicateAttemptsCounter);
-

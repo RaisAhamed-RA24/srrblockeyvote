@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Shield, Fingerprint, Scan, CheckCircle } from "lucide-react";
-import axios from "axios";
+import api from "../utils/api";
 import Topbar from "../components/Topbar";
 
 function Biometric() {
@@ -14,16 +14,15 @@ function Biometric() {
   const [verified, setVerified] = useState(false);
   const [statusText, setStatusText] = useState("");
   
-  const loggedInVoter = localStorage.getItem("loggedInVoter");
-  const loggedInVoterId = localStorage.getItem("loggedInVoterId");
+  const userStr = localStorage.getItem("user");
 
   useEffect(() => {
-    if (!loggedInVoter || !loggedInVoterId) {
-      navigate("/login");
+    if (!userStr) {
+      navigate("/voter/login");
       return;
     }
     setStatusText(`${selectedType} scanner ready.`);
-  }, [selectedType, loggedInVoter, loggedInVoterId, navigate]);
+  }, [selectedType, userStr, navigate]);
 
   const handleTypeChange = (type) => {
     if (scanning || verified) return;
@@ -36,11 +35,10 @@ function Biometric() {
     setScanning(true);
     setStatusText(`Scanning ${selectedType.toLowerCase()}...`);
 
-    // Simulate biometric scan delay (800ms as per original logic)
+    // Simulate biometric scan delay (800ms)
     setTimeout(async () => {
       try {
-        const res = await axios.post("http://localhost:5000/api/voters/biometrics", {
-          voterId: loggedInVoterId,
+        const res = await api.post("/voter/biometrics", {
           biometricType: selectedType
         });
         
@@ -50,14 +48,14 @@ function Biometric() {
           setScanning(false);
           setStatusText("Identity Verified. Proceed to Voting.");
           
-          // Short delay before transitioning to ballot (800ms)
+          // Short delay before transitioning to ballot
           setTimeout(() => {
-            navigate("/voting");
+            navigate("/voter/voting");
           }, 1200);
         }
       } catch (err) {
         setScanning(false);
-        setStatusText("Biometric update failed. Contact administration.");
+        setStatusText("Biometric verification failed. Contact admin.");
       }
     }, 1200);
   };

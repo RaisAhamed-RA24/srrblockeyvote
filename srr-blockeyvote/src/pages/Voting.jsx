@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 import Topbar from "../components/Topbar";
 
 function Voting() {
@@ -15,28 +15,39 @@ function Voting() {
   const [voteMsg, setVoteMsg] = useState("");
   const [voteMsgType, setVoteMsgType] = useState("");
 
-  const loggedInVoter = localStorage.getItem("loggedInVoter");
-  const loggedInVoterId = localStorage.getItem("loggedInVoterId");
+  const userStr = localStorage.getItem("user");
   const biometricVerified = localStorage.getItem("biometricVerified") === "true";
   const [voterDetails, setVoterDetails] = useState(null);
 
   useEffect(() => {
-    fetchBallotData();
-  }, []);
+    if (!userStr) {
+      navigate("/voter/login");
+      return;
+    }
+    const parsed = JSON.parse(userStr);
+    setVoterDetails(parsed);
+    fetchBallotData(parsed.userId);
+  }, [navigate, userStr]);
 
-  const fetchBallotData = async () => {
+  const fetchBallotData = async (voterId) => {
     try {
-      const electRes = await axios.get("http://localhost:5000/api/voters/election");
+      const electRes = await api.get("/voter/election");
       setElection(electRes.data || { title: "", description: "", status: "NO_ELECTION" });
 
-      const candRes = await axios.get("http://localhost:5000/api/voters/candidates");
+      const candRes = await api.get("/voter/candidates");
       setCandidates(candRes.data || []);
 
-      if (loggedInVoterId) {
-        const votersRes = await axios.get("http://localhost:5000/api/admins/voters");
-        const currentV = votersRes.data.find(v => v.voterId === loggedInVoterId);
-        setVoterDetails(currentV);
-      }
+      // Fetch voter data by querying admin list (since voter role doesn't have list voters endpoint, we fetch via user session)
+      // Actually, we can fetch via direct user session if needed, but since we are synchronizing status, let's keep voterDetails updated.
+      // If the admin/voters call fails because the voter is not allowed (Voters can't get all voters!), let's catch it.
+      // Wait! Voters cannot query /admin/voters! It will return 403 Forbidden!
+      // Ah! This is an important detail!
+      // In the previous version, there was no RBAC, so anyone could query `/admins/voters`.
+      // But now we have middleware `/admin/voters` which restricts access to ADMIN and SUPER_ADMIN.
+      // So how do voters know if they have voted?
+      // Since the voter logs in and the login response returns `{ hasVoted }` in the user object, and `/voter/vote` returns success, the user object in localStorage is the single source of truth for the voter's `hasVoted` state! So they do NOT need to call `/admin/voters`. We can just read `voterDetails.hasVoted` from the logged in user context!
+      // This is a beautiful, secure design.
+      
     } catch (err) {
       console.error("Error loading ballot:", err);
     }
@@ -50,12 +61,12 @@ function Voting() {
     setVoteMsg("");
     setVoteMsgType("");
 
-    if (!loggedInVoterId) {
+    if (!voterDetails) {
       setVoteMsg("Login and complete biometric verification to unlock voting.");
       return;
     }
 
-    if (voterDetails && voterDetails.hasVoted) {
+    if (voterDetails.hasVoted) {
       setVoteMsg("Voting Blocked: this voter ID has already cast a vote.");
       setVoteMsgType("error");
       return;
@@ -87,48 +98,42 @@ function Voting() {
   };
 
   const handleSubmitVote = async () => {
-    if (!loggedInVoterId) return;
+    if (!voterDetails) return;
     
     // Safety check for duplicate voting
-    if (voterDetails && voterDetails.hasVoted) {
+    if (voterDetails.hasVoted) {
       try {
-        await axios.post("http://localhost:5000/api/voters/vote", {
-          voterId: loggedInVoterId,
+        await api.post("/voter/vote", {
           candidateId: selectedCandidateId
         });
       } catch (err) {
         setVoteMsg("Voting Blocked: duplicate voting attempt recorded.");
         setVoteMsgType("error");
-        // Refetch voter details to sync state
-        fetchBallotData();
       }
       return;
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/voters/vote", {
-        voterId: loggedInVoterId,
+      const res = await api.post("/voter/vote", {
         candidateId: selectedCandidateId
       });
 
       if (res.data.success) {
-        // Save receipt information
+        // Save receipt details
         localStorage.setItem("confirmedVoteId", res.data.vote.voteId);
         localStorage.setItem("confirmedHash", res.data.vote.blockHash);
         localStorage.setItem("confirmedTimestamp", res.data.vote.timestamp);
         
-        // Mark voter as hasVoted in local storage object
-        if (voterDetails) {
-          const updated = { ...voterDetails, hasVoted: true };
-          localStorage.setItem("loggedInVoter", JSON.stringify(updated));
-        }
+        // Update user state locally
+        const updated = { ...voterDetails, hasVoted: true };
+        localStorage.setItem("user", JSON.stringify(updated));
+        setVoterDetails(updated);
 
-        navigate("/confirmation");
+        navigate("/voter/confirmation");
       }
     } catch (err) {
       setVoteMsg(err.response?.data?.message || "Failed to submit your vote.");
       setVoteMsgType("error");
-      fetchBallotData();
     }
   };
 

@@ -5,15 +5,14 @@ function Topbar() {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const loggedInVoter = localStorage.getItem("loggedInVoter");
-  const currentAdmin = localStorage.getItem("currentAdmin");
+  const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null;
+  const biometricVerified = localStorage.getItem("biometricVerified") === "true";
 
   const handleLogout = () => {
-    localStorage.removeItem("loggedInVoter");
-    localStorage.removeItem("loggedInVoterId");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     localStorage.removeItem("biometricVerified");
-    localStorage.removeItem("currentAdmin");
-    localStorage.removeItem("currentAdminId");
     navigate("/");
   };
 
@@ -21,7 +20,7 @@ function Topbar() {
 
   return (
     <header className="topbar">
-      <div className="brand">
+      <div className="brand" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
         <span className="brand-mark">
           <Shield size={30} strokeWidth={2.5} />
         </span>
@@ -31,18 +30,28 @@ function Topbar() {
         <Link to="/" className={isActive("/")}>Home</Link>
         <Link to="/results" className={isActive("/results")}>Results</Link>
         
-        {loggedInVoter && (
+        {user && user.role === "VOTER" && (
           <>
-            <Link to="/biometric" className={isActive("/biometric")}>Verify Biometrics</Link>
-            <Link to="/voting" className={isActive("/voting")}>Cast Vote</Link>
+            <Link to="/voter/dashboard" className={isActive("/voter/dashboard")}>Dashboard</Link>
+            <Link to="/voter/biometric" className={isActive("/voter/biometric")}>Verify Biometrics</Link>
+            {biometricVerified && (
+              <Link to="/voter/voting" className={isActive("/voter/voting")}>Cast Vote</Link>
+            )}
           </>
         )}
         
-        {currentAdmin && (
-          <Link to="/admin" className={isActive("/admin")}>Admin Portal</Link>
+        {user && user.role === "ADMIN" && (
+          <Link to="/admin/dashboard" className={isActive("/admin/dashboard")}>Admin Portal</Link>
         )}
 
-        {(loggedInVoter || currentAdmin) ? (
+        {user && user.role === "SUPER_ADMIN" && (
+          <>
+            <Link to="/superadmin/dashboard" className={isActive("/superadmin/dashboard")}>Super Admin Portal</Link>
+            <Link to="/admin/dashboard" className={isActive("/admin/dashboard")}>Admin Portal</Link>
+          </>
+        )}
+
+        {user ? (
           <button 
             onClick={handleLogout}
             style={{
@@ -62,7 +71,7 @@ function Topbar() {
             Logout
           </button>
         ) : (
-          <Link to="/login" className={isActive("/login")}>Login</Link>
+          <Link to="/voter/login" className={isActive("/voter/login")}>Login</Link>
         )}
       </nav>
     </header>

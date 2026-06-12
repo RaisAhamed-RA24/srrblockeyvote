@@ -18,12 +18,12 @@ function Results() {
 
   const fetchResults = async () => {
     try {
-      const electRes = await axios.get("http://localhost:5000/api/voters/election");
+      const electRes = await axios.get("http://localhost:5000/api/public/election");
       const electData = electRes.data || { title: "", description: "", status: "NO_ELECTION" };
       setElection(electData);
 
       if (electData.status === "RESULTS_PUBLISHED") {
-        const resultsRes = await axios.get("http://localhost:5000/api/voters/results");
+        const resultsRes = await axios.get("http://localhost:5000/api/public/results");
         setCandidates(resultsRes.data || []);
       }
     } catch (err) {

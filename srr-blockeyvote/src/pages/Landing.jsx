@@ -1,36 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Shield, Fingerprint, Award, CheckCircle, Database } from "lucide-react";
+import { Shield, Fingerprint, Award, Database, BarChart3 } from "lucide-react";
 import axios from "axios";
 import Topbar from "../components/Topbar";
 
 function Landing() {
-  const [metrics, setMetrics] = useState({
-    pendingVoterApps: 0,
-    approvedVoters: 0,
-    latestVoterId: "--"
-  });
   const [election, setElection] = useState({
     title: "",
     description: "",
     status: "NO_ELECTION"
   });
-
-  // Forms states
-  const [voterForm, setVoterForm] = useState({ name: "", email: "", mobile: "" });
-  const [voterMsg, setVoterMsg] = useState("");
-  const [voterMsgType, setVoterMsgType] = useState("");
-
-  const [adminForm, setAdminForm] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-    organization: "",
-    password: "",
-    confirmPassword: ""
-  });
-  const [adminMsg, setAdminMsg] = useState("");
-  const [adminMsgType, setAdminMsgType] = useState("");
 
   useEffect(() => {
     fetchLandingData();
@@ -38,76 +17,10 @@ function Landing() {
 
   const fetchLandingData = async () => {
     try {
-      // Fetch election status
-      const electionRes = await axios.get("http://localhost:5000/api/voters/election");
+      const electionRes = await axios.get("http://localhost:5000/api/public/election");
       setElection(electionRes.data || { title: "", description: "", status: "NO_ELECTION" });
-
-      // Fetch voter statistics (using admin metrics endpoint or default values)
-      const metricsRes = await axios.get("http://localhost:5000/api/admins/dashboard-metrics");
-      
-      // Fetch latest voter ID
-      const votersRes = await axios.get("http://localhost:5000/api/admins/voters");
-      const lastVoter = votersRes.data.length > 0 ? votersRes.data[votersRes.data.length - 1].voterId : "--";
-
-      setMetrics({
-        pendingVoterApps: metricsRes.data.pendingVoterApps,
-        approvedVoters: metricsRes.data.approvedVoters,
-        latestVoterId: lastVoter
-      });
     } catch (err) {
       console.error("Error loading landing data:", err);
-    }
-  };
-
-  const handleVoterSubmit = async (e) => {
-    e.preventDefault();
-    setVoterMsg("");
-    try {
-      const res = await axios.post("http://localhost:5000/api/voters/register", voterForm);
-      if (res.data.success) {
-        setVoterMsgType("success");
-        setVoterMsg(`${voterForm.name}'s application was submitted for admin review with status PENDING.`);
-        setVoterForm({ name: "", email: "", mobile: "" });
-        fetchLandingData();
-      }
-    } catch (err) {
-      setVoterMsgType("error");
-      setVoterMsg(err.response?.data?.message || "Failed to submit voter registration.");
-    }
-  };
-
-  const handleAdminSubmit = async (e) => {
-    e.preventDefault();
-    setAdminMsg("");
-    if (adminForm.password !== adminForm.confirmPassword) {
-      setAdminMsgType("error");
-      setAdminMsg("Passwords do not match. Admin access request was not submitted.");
-      return;
-    }
-    try {
-      const res = await axios.post("http://localhost:5000/api/admins/request", {
-        name: adminForm.name,
-        email: adminForm.email,
-        mobile: adminForm.mobile,
-        organization: adminForm.organization,
-        password: adminForm.password
-      });
-      if (res.data.success) {
-        setAdminMsgType("success");
-        setAdminMsg(`${adminForm.name}'s admin access request was stored as PENDING.`);
-        setAdminForm({
-          name: "",
-          email: "",
-          mobile: "",
-          organization: "",
-          password: "",
-          confirmPassword: ""
-        });
-        fetchLandingData();
-      }
-    } catch (err) {
-      setAdminMsgType("error");
-      setAdminMsg(err.response?.data?.message || "Failed to submit admin request.");
     }
   };
 
@@ -115,18 +28,18 @@ function Landing() {
     <>
       <Topbar />
       <main>
-        {/* Hero Banner */}
+        {/* Hero Section */}
         <section className="hero">
           <div className="hero-icon">
             <Shield size={40} />
           </div>
-          <h1>SRR BlockeyVote Prototype</h1>
+          <h1>SRR BlockeyVote Platform</h1>
           <p>
-            An advanced blockchain-enabled, multi-factor biometric voting simulator designed to eliminate duplicate voting and deliver tamper-proof results.
+            A secure digital voting platform combining blockchain immutability and multi-factor biometric scanning to deliver fraud-free, auditable elections.
           </p>
           <div className="hero-actions">
-            <Link to="/login" className="primary-action">Access Ballot Portal</Link>
-            <a href="#register-section" className="secondary-action">Voter Registration</a>
+            <Link to="/voter/login" className="primary-action">Ballot Portal Login</Link>
+            <Link to="/voter/register" className="secondary-action">Voter Registration</Link>
           </div>
         </section>
 
@@ -136,233 +49,92 @@ function Landing() {
             <div className="feature-icon">
               <Database size={24} />
             </div>
-            <h2>Cryptographic Blockchain Ledger</h2>
+            <h2>Blockchain Immutability</h2>
             <p>
-              Every vote creates an immutable block cryptographically linked to the previous transaction, preventing any manipulation of recorded totals.
+              Votes are committed to a cryptographically chained ledger. Transactions are irreversible and fully auditable by public keys.
             </p>
           </article>
           <article className="feature-card">
             <div className="feature-icon">
               <Fingerprint size={24} />
             </div>
-            <h2>Multi-Factor Biometrics</h2>
+            <h2>Biometric Verification</h2>
             <p>
-              Dual-verification workflows simulate Fingerprint and Face Recognition hardware scanning to securely verify identity at the point of ballot submission.
+              Simulated Fingerprint and Face Recognition checks verify physical identity at the point of ballot casting, stopping duplicate voting.
             </p>
           </article>
           <article className="feature-card">
             <div className="feature-icon">
               <Award size={24} />
             </div>
-            <h2>Secure Admin Framework</h2>
+            <h2>Role-Based Security</h2>
             <p>
-              Hierarchical authentication, timed security lockouts, audit logs, and critical action approvals keep the entire election lifecycle secure.
+              Strict hierarchical credentials protect administrative actions. Lockouts and re-authentication guards preserve integrity.
             </p>
           </article>
         </section>
 
-        {/* Process Steps Panel */}
-        <section className="process-panel">
-          <h2>How BlockeyVote Secures Elections</h2>
+        {/* Process Flow Steps */}
+        <section className="process-panel" style={{ marginTop: "60px" }}>
+          <h2>How BlockeyVote Secures Your Vote</h2>
           <ol className="steps">
             <li>
               <span>1</span>
-              <strong>Voter Registration</strong>
-              <small>Submit credentials and apply for administrative clearance.</small>
+              <strong>Submit Application</strong>
+              <small>Voters submit registration details and proof of identity.</small>
             </li>
             <li>
               <span>2</span>
               <strong>Admin Clearance</strong>
-              <small>Election administrators verify information and approve Voter ID.</small>
+              <small>Election Admin reviews applications and issues Voter credentials.</small>
             </li>
             <li>
               <span>3</span>
-              <strong>Biometric Scan</strong>
-              <small>Perform simulated multi-factor hardware identity confirmation.</small>
+              <strong>MFA Scan</strong>
+              <small>Simulate biometric physical verification before casting.</small>
             </li>
             <li>
               <span>4</span>
-              <strong>Cast Ballot</strong>
-              <small>Cast vote, hash transaction, and commit block to ledger.</small>
+              <strong>Audit Ledger</strong>
+              <small>Ballets are hashed, recorded to ledger blocks, and published.</small>
             </li>
           </ol>
         </section>
 
-        {/* Registration Two Column Section */}
-        <section className="page-section" id="register-section">
-          <div className="two-column">
-            {/* Voter Registration Panel */}
+        {/* Quick Info Dashboard Panel */}
+        <section className="page-section" style={{ marginBottom: "80px" }}>
+          <div className="two-column" style={{ gridTemplateColumns: "1fr 1fr" }}>
             <article className="panel">
-              <div className="section-heading">
-                <p>Register as Voter</p>
-                <h2>Apply for Ballot Access</h2>
-              </div>
-              <form onSubmit={handleVoterSubmit} className="form-grid">
-                <div>
-                  <label htmlFor="voter-name">Full Name</label>
-                  <input
-                    id="voter-name"
-                    type="text"
-                    required
-                    placeholder="Enter your name"
-                    value={voterForm.name}
-                    onChange={(e) => setVoterForm({ ...voterForm, name: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="voter-email">Email Address</label>
-                  <input
-                    id="voter-email"
-                    type="email"
-                    required
-                    placeholder="name@example.com"
-                    value={voterForm.email}
-                    onChange={(e) => setVoterForm({ ...voterForm, email: e.target.value })}
-                  />
-                </div>
-                <div className="wide">
-                  <label htmlFor="voter-mobile">Mobile Number</label>
-                  <input
-                    id="voter-mobile"
-                    type="tel"
-                    required
-                    placeholder="10-digit number"
-                    value={voterForm.mobile}
-                    onChange={(e) => setVoterForm({ ...voterForm, mobile: e.target.value })}
-                  />
-                </div>
-                <button type="submit" className="primary-action form-button">Submit Voter Application</button>
-                {voterMsg && (
-                  <p className="inline-message" data-type={voterMsgType}>{voterMsg}</p>
-                )}
-              </form>
-            </article>
-
-            {/* Voter Statistics Panel */}
-            <article className="panel status-panel" style={{ height: "fit-content" }}>
-              <h3>Ballot Statistics</h3>
-              <dl>
-                <div>
-                  <dt>Pending Applications</dt>
-                  <dd>{metrics.pendingVoterApps}</dd>
-                </div>
-                <div>
-                  <dt>Approved Voters</dt>
-                  <dd>{metrics.approvedVoters}</dd>
-                </div>
-                <div>
-                  <dt>Latest Voter ID</dt>
-                  <dd>{metrics.latestVoterId}</dd>
-                </div>
-              </dl>
-              <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--line)" }}>
-                <h4>Active Election Status</h4>
-                <p style={{ marginTop: "8px" }}>
-                  <strong>Title: </strong>
-                  {election.status !== "NO_ELECTION" ? election.title : "Currently no elections available"}
+              <h3>Election Status Board</h3>
+              <div style={{ marginTop: "16px" }}>
+                <strong>Current Election:</strong>
+                <p style={{ marginTop: "4px", color: "var(--muted)" }}>
+                  {election.status !== "NO_ELECTION" ? election.title : "No elections scheduled."}
                 </p>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center", marginTop: "12px" }}>
-                  <span>Status Pill: </span>
+                {election.status !== "NO_ELECTION" && (
+                  <p style={{ fontSize: "14px", color: "var(--muted)", marginTop: "4px" }}>
+                    {election.description}
+                  </p>
+                )}
+                <div style={{ display: "flex", gap: "10px", alignItems: "center", marginTop: "16px" }}>
+                  <span>Status:</span>
                   <span id="election-status-pill" data-status={election.status}>
                     {election.status}
                   </span>
                 </div>
               </div>
             </article>
-          </div>
-        </section>
 
-        {/* Admin Request Section */}
-        <section className="page-section">
-          <div className="two-column">
-            {/* Admin Access Form */}
-            <article className="panel">
-              <div className="section-heading">
-                <p>Administrative Access</p>
-                <h2>Request Admin Credentials</h2>
-              </div>
-              <form onSubmit={handleAdminSubmit} className="form-grid">
-                <div>
-                  <label htmlFor="admin-name">Full Name</label>
-                  <input
-                    id="admin-name"
-                    type="text"
-                    required
-                    placeholder="Priya Nair"
-                    value={adminForm.name}
-                    onChange={(e) => setAdminForm({ ...adminForm, name: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="admin-email">Email Address</label>
-                  <input
-                    id="admin-email"
-                    type="email"
-                    required
-                    placeholder="priya@ieee.org"
-                    value={adminForm.email}
-                    onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="admin-mobile">Mobile Number</label>
-                  <input
-                    id="admin-mobile"
-                    type="tel"
-                    required
-                    placeholder="9000011111"
-                    value={adminForm.mobile}
-                    onChange={(e) => setAdminForm({ ...adminForm, mobile: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="admin-org">Affiliated Organization</label>
-                  <input
-                    id="admin-org"
-                    type="text"
-                    required
-                    placeholder="IEEE Student Chapter"
-                    value={adminForm.organization}
-                    onChange={(e) => setAdminForm({ ...adminForm, organization: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="admin-pass">Password</label>
-                  <input
-                    id="admin-pass"
-                    type="password"
-                    required
-                    placeholder="Create security password"
-                    value={adminForm.password}
-                    onChange={(e) => setAdminForm({ ...adminForm, password: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="admin-confirm">Confirm Password</label>
-                  <input
-                    id="admin-confirm"
-                    type="password"
-                    required
-                    placeholder="Re-enter security password"
-                    value={adminForm.confirmPassword}
-                    onChange={(e) => setAdminForm({ ...adminForm, confirmPassword: e.target.value })}
-                  />
-                </div>
-                <button type="submit" className="primary-action form-button">Submit Admin Request</button>
-                {adminMsg && (
-                  <p className="inline-message" data-type={adminMsgType}>{adminMsg}</p>
-                )}
-              </form>
-            </article>
-
-            {/* Simulated Architecture Note */}
-            <article className="panel" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-              <div style={{ textAlign: "center", padding: "20px" }}>
-                <CheckCircle size={56} color="var(--success)" style={{ marginInline: "auto", marginBottom: "16px" }} />
-                <h3>Zero-Trust Security Simulation</h3>
-                <p style={{ marginTop: "12px" }}>
-                  This demo supports test data seeding, duplicate login attempt protection (temporary lock), multi-factor static OTP validation, and Super Admin critical command controls.
+            <article className="panel" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <h3>Administrative Requests</h3>
+                <p style={{ color: "var(--muted)", fontSize: "14px", marginTop: "8px" }}>
+                  Official observers and election officers can submit credential requests to obtain Admin privileges. Requests are reviewed by the Super Admin.
                 </p>
+              </div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
+                <Link to="/admin/register" className="button-like" style={{ flex: 1 }}>Request Admin Access</Link>
+                <Link to="/admin/login" className="primary-action" style={{ flex: 1, minHeight: "50px" }}>Admin Portal</Link>
               </div>
             </article>
           </div>

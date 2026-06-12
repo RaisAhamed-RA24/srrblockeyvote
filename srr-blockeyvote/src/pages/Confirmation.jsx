@@ -103,8 +103,8 @@ function Confirmation() {
               paddingTop: "20px"
             }}
           >
-            <Link to="/" style={{ color: "var(--muted)", fontWeight: 700, fontSize: "15px" }}>
-              Return to Homepage
+            <Link to="/voter/dashboard" style={{ color: "var(--muted)", fontWeight: 700, fontSize: "15px" }}>
+              Return to Dashboard
             </Link>
             <Link to="/results" className="primary-action" style={{ gap: "8px", minHeight: "44px" }}>
               View Election Results

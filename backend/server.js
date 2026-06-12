@@ -2,7 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./db.js";
-import routes from "./routes.js";
+import authRoutes from "./routes/authRoutes.js";
+import voterRoutes from "./routes/voterRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import superAdminRoutes from "./routes/superAdminRoutes.js";
 
 dotenv.config();
 
@@ -17,16 +20,19 @@ app.use(cors({
 
 app.use(express.json());
 
-// Connect to Database
+// Connect to Database & seed data
 connectDB();
 
-// API routes
-app.use("/api", routes);
+// Mount modular API routes
+app.use("/api", authRoutes);
+app.use("/api", voterRoutes);
+app.use("/api", adminRoutes);
+app.use("/api", superAdminRoutes);
 
-// Error handling middleware
+// Unhandled error middleware
 app.use((err, req, res, next) => {
   console.error("Unhandled server error:", err);
-  res.status(500).json({ error: "Internal Server Error" });
+  res.status(500).json({ success: false, error: "Internal Server Error" });
 });
 
 app.listen(PORT, () => {
