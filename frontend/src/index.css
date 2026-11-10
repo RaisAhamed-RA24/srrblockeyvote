@@ -1,0 +1,1216 @@
+:root {
+    --primary: #173b8f;
+    --primary-dark: #102b6b;
+    --primary-light: #eef3ff;
+
+    --accent: #d4a72c;
+    --accent-light: #fff8df;
+
+    --success: #16835b;
+    --success-light: #eaf8f1;
+
+    --danger: #c0392b;
+    --danger-light: #fff0ee;
+
+    --text: #172033;
+    --muted: #667085;
+
+    --background: #f5f7fb;
+    --surface: #ffffff;
+    --border: #e1e5ec;
+
+    --shadow:
+        0 8px 24px rgba(16, 42, 88, 0.08);
+
+    --radius: 12px;
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    color: var(--text);
+    background: var(--background);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+button {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ========================================
+   ROOT
+======================================== */
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* ========================================
+   MAIN DASHBOARD CONTAINER
+======================================== */
+
+#root > div {
+    width: min(1100px, calc(100% - 32px));
+    margin: 32px auto;
+    padding: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    text-align: left;
+}
+
+/* ========================================
+   HEADINGS
+======================================== */
+
+h1 {
+    margin: 0 0 8px;
+    color: var(--primary-dark);
+    font-size: 36px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+h2 {
+    margin: 28px 0 14px;
+    color: var(--primary-dark);
+    font-size: 22px;
+    line-height: 1.25;
+    font-weight: 750;
+}
+
+h3 {
+    margin: 0 0 10px;
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* ========================================
+   DIVIDERS
+======================================== */
+
+hr {
+    margin: 28px 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+}
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+button {
+    min-height: 42px;
+    padding: 0 18px;
+
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+
+    color: #ffffff;
+    background: var(--primary);
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+button:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 5px 14px rgba(23, 59, 143, 0.2);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ========================================
+   BIOMETRIC SECTION
+======================================== */
+
+h2 + p strong,
+strong {
+    color: var(--text);
+}
+
+button[onClick] {
+    margin-top: 4px;
+}
+
+/* ========================================
+   STATUS / MESSAGE
+======================================== */
+
+#root > div > p > strong {
+    display: inline-block;
+}
+
+#root > div > p:has(strong) {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: var(--primary-light);
+    border: 1px solid #d8e2ff;
+}
+
+/* ========================================
+   ELECTION CARDS
+======================================== */
+
+#root > div > h2 + p {
+    margin-bottom: 24px;
+}
+
+#root > div > div {
+    position: relative;
+}
+
+/* Election blocks */
+
+#root > div > div > h3 {
+    color: var(--primary-dark);
+}
+
+/* ========================================
+   ELECTION STATUS
+======================================== */
+
+strong {
+    font-weight: 700;
+}
+
+/* ========================================
+   CANDIDATE SECTION
+======================================== */
+
+#root > div > div > div {
+    margin-top: 10px;
+}
+
+/* Candidate containers */
+
+#root > div > div > div > h3 {
+    color: var(--primary);
+}
+
+/* ========================================
+   BLOCKCHAIN CONFIRMATION
+======================================== */
+
+code {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+
+    margin: 8px 0;
+    padding: 12px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: #f7f8fa;
+
+    color: var(--primary-dark);
+
+    font-family:
+        "Cascadia Code",
+        Consolas,
+        monospace;
+
+    font-size: 13px;
+}
+
+/* ========================================
+   SUCCESS INDICATORS
+======================================== */
+
+p strong {
+    color: var(--success);
+}
+
+/* ========================================
+   RESULTS
+======================================== */
+
+#root > div > div:last-child {
+    margin-top: 20px;
+}
+
+#root > div > div:last-child p {
+    padding: 14px 16px;
+
+    background: #f8fafc;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 768px) {
+
+    #root > div {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        padding: 22px 18px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 17px;
+    }
+
+    button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    hr {
+        margin: 22px 0;
+    }
+}
+
+@media (max-width: 480px) {
+
+    #root > div {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px 14px;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    h2 {
+        font-size: 19px;
+    }
+}
+/* =========================================
+   VOTER DASHBOARD
+========================================= */
+
+.dashboard-shell {
+    width: 100%;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.eyebrow,
+.section-label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+.dashboard-header p {
+    max-width: 650px;
+}
+
+.security-badge {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    border: 1px solid #cfe8dc;
+    border-radius: 20px;
+    background: var(--success-light);
+    color: var(--success);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.system-message {
+    margin-top: 22px;
+    padding: 14px 18px;
+    border: 1px solid #d8e2ff;
+    border-radius: 10px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.system-message strong {
+    color: var(--primary-dark);
+}
+
+.section {
+    margin-top: 38px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 18px;
+}
+
+.section-heading h2 {
+    margin: 0 0 7px;
+}
+
+.section-heading p {
+    margin-bottom: 0;
+}
+
+
+/* SECURITY CARDS */
+
+.security-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.security-card {
+    display: flex;
+    gap: 18px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.security-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    font-size: 23px;
+}
+
+.security-card-content {
+    flex: 1;
+}
+
+.security-card-content h3 {
+    margin-bottom: 8px;
+}
+
+.security-card-content p {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+
+/* STATUS BADGES */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.status-badge.success {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.status-badge.verified {
+    margin-top: 8px;
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.status-badge.pending {
+    background: var(--accent-light);
+    color: #8a6812;
+}
+
+.status-badge.neutral {
+    background: #f0f2f5;
+    color: var(--muted);
+}
+
+
+/* ELECTIONS */
+
+.election-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.election-card {
+    position: relative;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.election-card:hover {
+    transform: translateY(-3px);
+    border-color: #cbd5ea;
+    box-shadow:
+        0 12px 28px rgba(16, 42, 88, 0.11);
+}
+
+.election-card-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+}
+
+.election-card h3 {
+    font-size: 20px;
+}
+
+.election-card p {
+    min-height: 50px;
+    font-size: 14px;
+}
+
+.election-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.muted-action {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* CANDIDATES */
+
+.candidate-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.candidate-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.candidate-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.candidate-info {
+    flex: 1;
+}
+
+.candidate-info h3 {
+    margin-bottom: 4px;
+}
+
+.candidate-info p {
+    margin: 0;
+    font-size: 13px;
+}
+
+
+/* BLOCKCHAIN CONFIRMATION */
+
+.blockchain-card {
+    padding: 26px;
+    border: 1px solid #d8e2ff;
+    border-radius: var(--radius);
+    background:
+        linear-gradient(
+            135deg,
+            #f8faff,
+            #ffffff
+        );
+    box-shadow: var(--shadow);
+}
+
+.blockchain-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.blockchain-header h2 {
+    margin: 0;
+}
+
+.blockchain-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    font-size: 22px;
+}
+
+.confirmation-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 14px;
+}
+
+.confirmation-item {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+}
+
+.confirmation-item span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.confirmation-item strong {
+    color: var(--primary-dark);
+}
+
+.confirmation-item code {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    word-break: break-all;
+}
+
+.confirmation-message {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 8px;
+    background: var(--success-light);
+    color: var(--success);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* RESULTS */
+
+.results-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.result-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+}
+
+.result-rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.result-info {
+    flex: 1;
+}
+
+.result-info h3 {
+    margin-bottom: 3px;
+}
+
+.result-info span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.result-votes {
+    text-align: right;
+}
+
+.result-votes strong {
+    display: block;
+    color: var(--primary-dark);
+    font-size: 22px;
+}
+
+.result-votes span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+
+/* EMPTY STATE */
+
+.empty-state {
+    padding: 50px 20px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: #fafbfc;
+    text-align: center;
+}
+
+.empty-icon {
+    margin-bottom: 12px;
+    font-size: 38px;
+}
+
+.empty-state h3 {
+    margin-bottom: 6px;
+}
+
+.empty-state p {
+    margin-bottom: 0;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .dashboard-header {
+        flex-direction: column;
+    }
+
+    .security-badge {
+        align-self: flex-start;
+    }
+
+    .security-grid,
+    .election-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .candidate-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .candidate-card button {
+        width: 100%;
+    }
+
+    .confirmation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        margin-top: 30px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .dashboard-header {
+        padding-bottom: 20px;
+    }
+
+    .security-card {
+        padding: 18px;
+    }
+
+    .election-card {
+        padding: 20px;
+    }
+
+    .candidate-card {
+        padding: 16px;
+    }
+
+    .blockchain-card {
+        padding: 20px;
+    }
+
+    .blockchain-header {
+        align-items: flex-start;
+    }
+
+    .result-card {
+        padding: 14px;
+    }
+
+    .result-votes strong {
+        font-size: 19px;
+    }
+}
+/* =========================================
+   ADMIN DASHBOARD
+========================================= */
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.admin-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.admin-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: var(--primary-light);
+    font-size: 21px;
+}
+
+.admin-stat-card span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-stat-card strong {
+    display: block;
+    color: var(--primary-dark);
+    font-size: 25px;
+}
+
+
+/* =========================================
+   ADMIN LIST
+========================================= */
+
+.admin-list {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-list-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 17px 19px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.admin-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.admin-list-info {
+    flex: 1;
+}
+
+.admin-list-info h3 {
+    margin-bottom: 3px;
+}
+
+.admin-list-info p {
+    margin: 0;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   ADMIN FORMS
+========================================= */
+
+.admin-form-card {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.admin-form-card h3 {
+    margin-bottom: 5px;
+}
+
+.admin-form-card > p {
+    margin-bottom: 22px;
+    font-size: 14px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-field.full {
+    grid-column: 1 / -1;
+}
+
+.form-field label {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-field input,
+.form-field textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-field input {
+    min-height: 44px;
+}
+
+.form-field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+    border-color: var(--primary);
+    box-shadow:
+        0 0 0 3px rgba(23, 59, 143, 0.1);
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+    color: #98a2b3;
+}
+
+
+/* =========================================
+   ADMIN ELECTION ACTIONS
+========================================= */
+
+.admin-election-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.admin-election-actions button {
+    min-height: 39px;
+    padding: 0 13px;
+    font-size: 12px;
+}
+
+.danger-button {
+    border-color: var(--danger);
+    background: var(--danger);
+}
+
+.danger-button:hover {
+    background: #a93226;
+}
+
+
+/* =========================================
+   CANDIDATE MANAGEMENT
+========================================= */
+
+.candidate-management-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.85fr) minmax(320px, 1.15fr);
+    gap: 25px;
+    align-items: start;
+}
+
+.candidate-management-grid > div > h3 {
+    margin-top: 3px;
+}
+
+.candidate-management-grid > div > p {
+    font-size: 13px;
+}
+
+
+/* =========================================
+   ADMIN RESPONSIVE
+========================================= */
+
+@media (max-width: 950px) {
+
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .candidate-management-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .admin-list-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .admin-list-info {
+        min-width: calc(100% - 65px);
+    }
+
+    .admin-list-card .status-badge {
+        margin-left: 60px;
+    }
+
+    .admin-list-card button {
+        width: 100%;
+        margin-left: 60px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-field.full {
+        grid-column: auto;
+    }
+
+    .admin-election-actions {
+        flex-direction: column;
+    }
+
+    .admin-election-actions button {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-stat-card {
+        padding: 16px;
+    }
+
+    .admin-form-card {
+        padding: 19px;
+    }
+
+    .admin-list-card {
+        padding: 15px;
+    }
+
+    .admin-list-card .status-badge,
+    .admin-list-card button {
+        margin-left: 0;
+    }
+}
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    background: #f5f7fb;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 460px;
+    background: white;
+    padding: 36px;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.auth-header h1 {
+    margin: 8px 0;
+}
+
+.auth-header p {
+    color: #667085;
+}
+
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.auth-card input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #d9dee8;
+    border-radius: 9px;
+    font-size: 15px;
+}
+
+.auth-card input:focus {
+    outline: none;
+    border-color: #173b8f;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 22px;
+    color: #667085;
+}
+
+.auth-footer a {
+    color: #173b8f;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.success-message {
+    background: #e9f8f1;
+    color: #16835b;
+}
+
+.error-message {
+    background: #fdecec;
+    color: #c0392b;
+}
